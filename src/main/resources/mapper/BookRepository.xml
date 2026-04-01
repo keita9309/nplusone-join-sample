@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.nplusone_join_sample.infrastructure.BookRepository">
+
+    <!-- N+1の原因クエリ: 著者1件ごとに個別発行される -->
+    <select id="findByAuthorId" resultType="com.example.nplusone_join_sample.domain.Book">
+        SELECT id, title, author_id FROM books WHERE author_id = #{authorId}
+    </select>
+
+    <!-- 書籍を一括INSERT（起動時データ初期化用） -->
+    <insert id="insertAll" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO books (title, author_id) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.title}, #{item.authorId})
+        </foreach>
+    </insert>
+
+</mapper>

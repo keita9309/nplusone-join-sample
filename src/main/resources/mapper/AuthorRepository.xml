@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.nplusone_join_sample.infrastructure.AuthorRepository">
+
+    <!--
+        LEFT JOINの結果（著者 × 書籍のフラットな行）を
+        Author.books に自動でネストしてマッピングするresultMap。
+        JPA の LEFT JOIN FETCH に相当する処理を、純粋なSQLとマッピング定義で実現している。
+    -->
+    <resultMap id="authorWithBooksResultMap" type="com.example.nplusone_join_sample.domain.Author">
+        <id     property="id"    column="author_id"/>
+        <result property="name"  column="author_name"/>
+        <collection property="books" ofType="com.example.nplusone_join_sample.domain.Book">
+            <id     property="id"       column="book_id"/>
+            <result property="title"    column="book_title"/>
+            <result property="authorId" column="book_author_id"/>
+        </collection>
+    </resultMap>
+
+    <!-- N+1問題側: 著者のみ取得 -->
+    <select id="findAllAuthors" resultType="com.example.nplusone_join_sample.domain.Author">
+        SELECT id, name FROM authors
+    </select>
+
+    <!--
+        N+1改善側: LEFT JOINで著者と書籍を1回のSQLで取得する。
+        resultMapがフラットな行をAuthor + List<Book>の構造に変換する。
+    -->
+    <select id="findAllWithBooks" resultMap="authorWithBooksResultMap">
+        SELECT
+            a.id    AS author_id,
+            a.name  AS author_name,
+            b.id    AS book_id,
+            b.title AS book_title,
+            b.author_id AS book_author_id
+        FROM authors a
+        LEFT JOIN books b ON a.id = b.author_id
+    </select>
+
+    <!-- 著者を一括INSERT（起動時データ初期化用） -->
+    <insert id="insertAll" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO authors (name) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name})
+        </foreach>
+    </insert>
+
+</mapper>

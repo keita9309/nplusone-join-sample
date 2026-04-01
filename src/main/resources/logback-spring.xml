@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOG_DIR" value="logs"/>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- コンソール出力（アプリケーションログ） -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--
+        リクエストごとに別ファイルへSQLを出力する。
+        RequestLoggingFilter がリクエスト開始時に MDC へセットした requestTimestamp を
+        discriminator が読み取り、その値ごとに FileAppender を動的に生成する。
+    -->
+    <appender name="SQL_SIFTING" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <!-- MDCにrequestTimestampがない場合（起動時など）はログを破棄 -->
+        <filter class="com.example.nplusone_join_sample.presentation.filter.RequestOnlyFilter"/>
+        <discriminator>
+            <key>requestTimestamp</key>
+            <defaultValue>unknown</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="SQL_FILE_${requestTimestamp}" class="ch.qos.logback.core.FileAppender">
+                <file>${LOG_DIR}/executed_sql_${requestTimestamp}.log</file>
+                <append>true</append>
+                <encoder>
+                    <pattern>${LOG_PATTERN}</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+    <!-- MyBatisのSQL文 → リクエストごとのファイルに出力（コンソールには出さない） -->
+    <logger name="com.example.nplusone_join_sample.infrastructure" level="DEBUG" additivity="false">
+        <appender-ref ref="SQL_SIFTING"/>
+    </logger>
+
+    <!-- アプリケーション全体のログ → コンソールに出力 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
