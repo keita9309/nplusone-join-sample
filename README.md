@@ -60,13 +60,13 @@ cd nplusone-join-sample
 ### N+1問題の再現
 
 ```
-GET /authors?nPlusOne=true
+GET /api/authors?isImprovedNPlusOne=true
 ```
 
 ### LEFT JOINによる改善
 
 ```
-GET /authors?nPlusOne=false
+GET /api/authors?isImprovedNPlusOne=false
 ```
 
 ---
