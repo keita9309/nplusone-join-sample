@@ -75,8 +75,8 @@ GET /api/authors?isImprovedNPlusOne=false
 
 | Type      | SQL Count | Execution Time |
 | --------- | --------- | -------------- |
-| N+1       | 50001     | 1200ms         |
-| LEFT JOIN | 1         | 150ms          |
+| N+1       | 50001     | 1500ms         |
+| LEFT JOIN | 1         | 300ms          |
 
 ※ 実行環境により変動
 
