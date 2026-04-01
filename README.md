@@ -148,4 +148,5 @@ LEFT JOINは万能ではありません。
 ## 👤 Author
 
 Keita
+
 Backend Engineer (Java / Spring Boot)
