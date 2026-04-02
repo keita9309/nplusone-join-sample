@@ -60,13 +60,13 @@ cd nplusone-join-sample
 ### N+1問題の再現
 
 ```
-GET /api/authors?isImprovedNPlusOne=true
+GET /api/authors?useJoin=false
 ```
 
 ### LEFT JOINによる改善
 
 ```
-GET /api/authors?isImprovedNPlusOne=false
+GET /api/authors?useJoin=true
 ```
 
 ---
@@ -75,7 +75,7 @@ GET /api/authors?isImprovedNPlusOne=false
 
 | Type      | SQL Count | Execution Time |
 | --------- | --------- | -------------- |
-| N+1       | 50001     | 1500ms         |
+| N+1       | 50001     | 1200ms         |
 | LEFT JOIN | 1         | 300ms          |
 
 ※ 実行環境により変動
@@ -112,36 +112,12 @@ LEFT JOIN books b ON a.id = b.author_id;
 
 ---
 
-## ⚠️ Important Note
-
-LEFT JOINは万能ではありません。
-
-* データ件数が多い場合、JOIN結果が巨大化する
-* メモリ使用量が増える可能性がある
-
-実務では以下の選択も重要です：
-
-* ページネーション
-* バッチ取得
-* キャッシュ
-
----
-
 ## 🔥 Key Learning
 
 * N+1問題はパフォーマンス劣化の典型例
 * SQL本数削減が重要
 * JOINは有効な解決策の一つ
 * ただし状況に応じた設計が必要
-
----
-
-## 📈 Improvements (Future Work)
-
-* ページネーション対応
-* DTO最適化
-* QueryDSL / JPA版の比較
-* キャッシュ導入（Redis）
 
 ---
 

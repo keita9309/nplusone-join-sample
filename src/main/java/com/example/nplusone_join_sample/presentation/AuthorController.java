@@ -19,8 +19,8 @@ public class AuthorController {
 
     @GetMapping
     public ResponseEntity<QueryResultResponse> getAuthors(
-            @RequestParam boolean isImprovedNPlusOne) {
-        QueryResult result = authorQueryService.findAuthors(isImprovedNPlusOne);
+            @RequestParam boolean useJoin) {
+        QueryResult result = authorQueryService.findAuthors(useJoin);
         return ResponseEntity.ok(QueryResultResponse.from(result));
     }
 }

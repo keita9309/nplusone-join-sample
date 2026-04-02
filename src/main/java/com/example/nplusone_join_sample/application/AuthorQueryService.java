@@ -25,19 +25,19 @@ public class AuthorQueryService {
 
     /**
      * 著者と書籍の一覧を取得する。
-     * isImprovedNPlusOne=false でN+1問題、true でLEFT JOINを実行し、
+     * useJoin=false でN+1問題、true でLEFT JOINを実行し、
      * 実行時間とSQL本数を計測して返す。
      *
-     * @param isImprovedNPlusOne false=N+1問題、true=LEFT JOIN最適化
+     * @param useJoin false=N+1問題、true=LEFT JOIN最適化
      * @return クエリ種別・SQL本数・実行時間・著者一覧を含む結果
      */
     @Transactional(readOnly = true)
-    public QueryResult findAuthors(boolean isImprovedNPlusOne) {
+    public QueryResult findAuthors(boolean useJoin) {
         SqlQueryCounter.reset();
         long startTime = System.currentTimeMillis();
         List<AuthorData> authors;
 
-        if (isImprovedNPlusOne) {
+        if (useJoin) {
             // 改善後: LEFT JOINで著者と書籍を1クエリで取得
             // MyBatisのresultMapがフラットなJOIN結果をAuthor + List<Book>に変換する
             authors = mapToAuthorDataList(authorRepository.findAllWithBooks());
@@ -50,11 +50,11 @@ public class AuthorQueryService {
         long sqlQueryCount = SqlQueryCounter.get();
 
         log.info("[{}] SQL発行本数: {}件, 実行時間: {}ms",
-            isImprovedNPlusOne ? "LEFT JOIN最適化（改善後）" : "N+1問題（改善前）",
+            useJoin ? "LEFT JOIN最適化（改善後）" : "N+1問題（改善前）",
             sqlQueryCount,
             executionTimeMs);
 
-        if (isImprovedNPlusOne) {
+        if (useJoin) {
             return QueryResult.builder()
                 .queryType("LEFT JOIN最適化（改善後）")
                 .description("LEFT JOINにより著者と書籍を1回のSQLで取得します。著者数に関わらずSQLは常に1回です。")

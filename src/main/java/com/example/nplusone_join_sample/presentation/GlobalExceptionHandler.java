@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     /**
-     * 必須クエリパラメータが未指定の場合（例: isImprovedNPlusOne が未指定）。
+     * 必須クエリパラメータが未指定の場合（例: useJoin が未指定）。
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingParam(MissingServletRequestParameterException e) {
