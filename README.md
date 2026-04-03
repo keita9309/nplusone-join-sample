@@ -36,7 +36,7 @@ src/main/java/com/example/nplusone_join_sample
 ## ⚙️ Tech Stack
 
 * Java 21
-* Spring Boot 3.x
+* Spring Boot 3.5.3
 * MyBatis
 * H2 Database
 * Lombok

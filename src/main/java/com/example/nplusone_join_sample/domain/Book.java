@@ -1,12 +1,8 @@
 package com.example.nplusone_join_sample.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class Book {
 
     // 書籍ID

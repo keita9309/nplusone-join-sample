@@ -1,15 +1,11 @@
 package com.example.nplusone_join_sample.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class Author {
 
     // 著者ID
